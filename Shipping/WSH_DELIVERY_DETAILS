@@ -1,0 +1,51 @@
+Oracle EBS - Delivery Detail fields
+
+Sales Order Line Status Flow
+OM = Order Management Sales Order Form
+SE = Shipping Transactions or Shipping Execution Form
+
+Entered [OM]: Order is saved but not booked
+Booked [OM]: Order is Booked.
+Awaiting Shipping [OM]: Order is booked but lines are not yet picked.
+Navigating to Shipping Execution, the delivery line status flow is:Not Ready to Release [SE]: A delivery line may be in this status when it is interfaced manually into Shipping, is not scheduled and has no reservations. When lines are imported automatically from Order Management this status is not used.
+Released to Warehouse [SE]: Pick Release has started but not yet completed. One of the reason could be allocation have not been pick confirmed. The Pick Release process creates a Move Order Header & Mover Order Line in Inventory. This is a common status for users that perform a two-step pick release process. This status indicates that inventory allocation has occurred however pick conformation has not yet taken place.
+Ready to Release [SE]: Order Line is booked and passed to shipping execution. The line is now eligible to pick Release.
+Backordered [SE]: The status of Backorderd is assigned to a line under the following circumstances.● The Pick Release process attempted to allocate inventory to the line and all or a partial quantity of the item was not available. In this case the system automatically backorders the discrepant quantity.
+● At Ship confirm the user enters a shipped quantity for an item that is less than the original requested quantity.
+● The user manually Backorders the entire delivery.
+Shipped [SE]: The delivery line is shipped confirmed.
+Confirmed [SE]: The delivery line is shipped or backordered and the trip stops are open.
+Picked [OM]: Pick release is complete, both allocations and pick confirm
+Picked Partial [OM]: This status occurs when a delivery line is not allocated the full quantity during Pick Release and Ship Confirm has not occurred
+Interfaced [SE]: The delivery line is shipped and Inventory interface concurrent process is complete.
+Awaiting Fulfillment [OM]: When fulfillment set is used, Not all shippable lines in a fulfillment set or a configuration are fulfilled
+Fulfilled [OM]: All lines in a fulfillment set are fulfilled.
+Interfaced to Receivables [OM]: The order is linked with Receivables and the invoice is created.
+Partially Interfaced to Receivables [OM]: This status is used in a PTO flow and indicates that the particular PTO item is required for revenue.
+Closed [OM]: Closed indicates that the line is closed.
+Canceled [OM]: Indicates that the line has been completely canceled. No further processing will occur for this line.
+
+WSH_DELIVERY_DETAILS.Release_Status can have any of the below valid values
+Execute the below query to see lookup values
+SELECT lookup_type,
+  lookup_code,
+  meaning,
+  description
+FROM fnd_lookup_values
+WHERE lookup_type = 'PICK_STATUS'
+AND LANGUAGE      = 'US';
+LOOKUP_TYPE	LOOKUP_CODE	MEANING	DESCRIPTION
+PICK_STATUS	B	Backordered	Line failed to be allocated in Inventory
+PICK_STATUS	C	Shipped	Line has been shipped
+PICK_STATUS	D	Cancelled	Line is Cancelled
+PICK_STATUS	E	Replenishment Requested	Line has been replenishment requested
+PICK_STATUS	F	Replenishment Completed	Line has been replenishment completed
+PICK_STATUS	I	Interfaced	Line has been shipped and interfaced to Order Management and Inventory
+PICK_STATUS	K	Planned for Crossdocking	Line has been Planned for X-dock
+PICK_STATUS	L	Closed	Line has been Received
+PICK_STATUS	N	Not Ready to Release	Line is not ready to be released
+PICK_STATUS	P	Purged	Line has been purged from source system
+PICK_STATUS	R	Ready to Release	Line is ready to be released
+PICK_STATUS	S	Released to Warehouse	Line has been released to Inventory for processing
+PICK_STATUS	X	Not Applicable	Line is not applicable for Pick Release
+PICK_STATUS	Y	Staged/Pick Confirmed	Line has been picked and staged by Inventory
